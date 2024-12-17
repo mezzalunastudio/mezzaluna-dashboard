@@ -31,7 +31,7 @@ app.use("/public", express.static(path.join(__dirname, "../public")));
 // health check
 app.get("/", (_, res) => {
   return res.status(200).json({
-    status: "healthy",
+    status: "hello world.",
   });
 });
 // auth routes
