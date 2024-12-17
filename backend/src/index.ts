@@ -3,17 +3,17 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import cookieParser from "cookie-parser";
-import connectToDatabase from "../config/db";
-import errorHandler from "../middleware/errorHandler";
-import authenticate from "../middleware/authenticate";
-import authRoutes from "../routes/auth.route";
-import userRoutes from "../routes/user.route";
-import weddingRoute from "../routes/wedding.route";
-import sessionRoutes from "../routes/session.route";
-import contentRoutes from "../routes/content.route";
-import imageRoutes from "../routes/image.route";
-import { APP_ORIGIN,ALLOWED_ORIGIN, NODE_ENV, PORT } from "../constants/env";
-import originCheck from "../middleware/originCheck";
+import connectToDatabase from "./config/db";
+import errorHandler from "./middleware/errorHandler";
+import authenticate from "./middleware/authenticate";
+import authRoutes from "./routes/auth.route";
+import userRoutes from "./routes/user.route";
+import weddingRoute from "./routes/wedding.route";
+import sessionRoutes from "./routes/session.route";
+import contentRoutes from "./routes/content.route";
+import imageRoutes from "./routes/image.route";
+import { APP_ORIGIN,ALLOWED_ORIGIN, NODE_ENV, PORT } from "./constants/env";
+import originCheck from "./middleware/originCheck";
 
 const app = express();
 
