@@ -3,7 +3,7 @@ import { UNAUTHORIZED } from "../constants/http";
 import { navigate } from "./navigation";
 
 const options: AxiosRequestConfig = {
-  baseURL: "http://localhost:4004",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 };
 
