@@ -14,6 +14,7 @@ export const MONGO_URI = getEnv("MONGO_URI");
 export const APP_ORIGIN = getEnv("APP_ORIGIN");
 export const JWT_SECRET = getEnv("JWT_SECRET");
 export const JWT_REFRESH_SECRET = getEnv("JWT_REFRESH_SECRET");
-export const EMAIL_SENDER = getEnv("EMAIL_SENDER");
-export const RESEND_API_KEY = getEnv("RESEND_API_KEY");
 export const ALLOWED_ORIGIN = getEnv("ALLOWED_ORIGIN");
+// using for sign in activation
+// export const EMAIL_SENDER = getEnv("EMAIL_SENDER");
+// export const RESEND_API_KEY = getEnv("RESEND_API_KEY");

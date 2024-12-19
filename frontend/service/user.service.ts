@@ -32,8 +32,8 @@ export const logout = async (): Promise<any> =>
 export const verifyEmail = async (verificationCode: string): Promise<any> => 
   API.get(`/auth/email/verify/${verificationCode}`);
 
-export const sendPasswordResetEmail = async (email: string): Promise<any> => 
-  API.post("/auth/password/forgot", { email });
+// export const sendPasswordResetEmail = async (email: string): Promise<any> => 
+//   API.post("/auth/password/forgot", { email });
 
 export const resetPassword = async (data: ResetPasswordData): Promise<any> => 
   API.post("/auth/password/reset", data);
