@@ -1,14 +1,18 @@
-import { INTERNAL_SERVER_ERROR, NOT_FOUND, OK } from "../constants/http";
+import connectToDatabase from "../config/db";
+import { INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SERVER_TIMEOUT } from "../constants/http";
 import WeddingModel from "../models/wedding.models";
 import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
 
 export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) => {
+  console.time("DB Query Time");
     const { category } = req.params;
     const { path } = req.params;
     // Fetch weddings with other criteria
-    const wedding = await WeddingModel.find({ category, isActive: true });
-
+    await connectToDatabase();
+    const wedding = await WeddingModel.find({ category, isActive: true }).limit(10);
+    console.timeEnd("DB Query Time");
+    appAssert(wedding,SERVER_TIMEOUT, "Request timed out");
   // Filter in memory based on virtual property
     const filteredWeddings = wedding.filter((wedding) => wedding.path === path);
     appAssert(wedding, NOT_FOUND, "wedding content not found");
