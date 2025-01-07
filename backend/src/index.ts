@@ -18,6 +18,7 @@ import originCheck from "./middleware/originCheck";
 const app = express();
 
 // add middleware
+//app_origin for dasboard, allowed_origin for client
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
