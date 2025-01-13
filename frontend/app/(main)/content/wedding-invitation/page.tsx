@@ -239,8 +239,20 @@ const WeddingContentPage = () => {
         setDeleteWeddingContentDialog(true);
     };
 
-    const exportCSV = () => {
-        dt.current?.exportCSV();
+    const exportJSON = (weddingcontent: Demo.wedding) => {
+        console.log(JSON.stringify(weddingcontent));
+        const date = new Date();
+        const formatedDate = date.toLocaleDateString('en-GB');
+
+        // Download weddingContent data as JSON before deleting
+        const jsonData = JSON.stringify(weddingcontent);
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Wedding-[${weddingcontent.path}][${formatedDate}].json`; // Name the file dynamically
+        link.click();
+        URL.revokeObjectURL(url);
     };
 
     const ImportJSON = () => {
@@ -460,7 +472,7 @@ const WeddingContentPage = () => {
                     <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} outlined />
                     <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedWeddingContents || !(selectedWeddingContents as any).length} outlined />
                     <Button className="ml-2" label="Import" icon="pi pi-download" severity="info" onClick={ImportJSON} outlined />
-                    <Button className="ml-2" label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} outlined />
+                    <Button className="ml-2" label="Export" icon="pi pi-upload" severity="help" outlined />
                 </div>
             </React.Fragment>
             <span>
@@ -570,7 +582,7 @@ const WeddingContentPage = () => {
     const actionBodyTemplate = (rowData: Demo.wedding) => {
         return (
             <>
-                <Button icon="pi pi-external-link" severity="help" rounded text />
+                <Button icon="pi pi-external-link" severity="help" onClick={() => exportJSON(rowData)} rounded text />
                 <Button icon="pi pi-eye" severity="info" onClick={() => viewWeddingContent(rowData)} rounded text />
                 <Button icon="pi pi-pencil" severity="success" onClick={() => editWeddingContent(rowData)} rounded text />
                 <Button icon="pi pi-trash" severity="danger" onClick={() => confirmDeleteWeddingContent(rowData)} rounded text />

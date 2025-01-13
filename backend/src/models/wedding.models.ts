@@ -65,6 +65,7 @@ export interface WeddingDocument extends mongoose.Document {
     attendance: string;
     createdDate: Date;
   }>;
+  backsound?: string;
   category: string;
   path?: string; // Virtual property
   isActive:boolean;
@@ -139,6 +140,7 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
         createdDate: { type: Date, required: true, default: Date.now },
       },
     ],
+    backsound:{ type: String },
     category: { type: String, required: true, index: true },
     isActive: { type: Boolean, required: true, default:false},
     createdAt: { type: Date, default: Date.now },
