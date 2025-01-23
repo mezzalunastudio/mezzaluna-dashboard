@@ -54,9 +54,9 @@ const WeddingContentPage = () => {
     const dropdownValues: InputValue[] = [
         { name: 'Glamour', code: 'glamour' },
         { name: 'Rustic', code: 'rustic' },
-        { name: 'Classic', code: 'classic' },
-        { name: 'Outdoor', code: 'outdoor' },
-        { name: 'Luxury', code: 'luxury' }
+        { name: 'Minimalist', code: 'minimalist' },
+        { name: 'Elegant', code: 'elegant' },
+        { name: 'Modern', code: 'modern' }
     ];
 
     const hideDialog = () => {

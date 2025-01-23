@@ -9,8 +9,6 @@ export interface WeddingDocument extends mongoose.Document {
     motherName: string;
     orderInFamily: string;
     instagram?: string;
-    bank?: string;
-    noRek?: string;
   };
   bride: {
     shortName: string;
@@ -20,8 +18,6 @@ export interface WeddingDocument extends mongoose.Document {
     motherName: string;
     orderInFamily: string;
     instagram?: string;
-    bank?: string;
-    noRek?: string;
   };
   quotes: {
     quote1: string;
@@ -33,12 +29,15 @@ export interface WeddingDocument extends mongoose.Document {
     time: string;
     date: string;
     place: string;
+    address:string;
     liveLink?: string;
   };
   resepsi: {
     time: string;
     date: string;
     place: string;
+    address:string;
+    liveLink?: string;
     mapsLink?: string;
   };
   loveStory: {
@@ -47,17 +46,30 @@ export interface WeddingDocument extends mongoose.Document {
     theProposal?: string;
     marriage?: string;
   };
+  gift:{
+    isRecieveGift:boolean;
+    giftAddress?:string;
+    groomBank?: string;
+    groomNoRek?: string;
+    brideBank?: string;
+    brideNoRek?: string;
+  };
   imageUrl: {
     groomImg?: string;
     brideImg?: string;
-    headerImg?: string;
     heroImg?: string;
+    headerImg?: string;
     eventImg?: string;
+    eventImg2?: string;
     quoteImg?: string;
     loveStoryImg?: string;
     giftImg?: string;
     rsvpImg?: string;
-    footerImg?: string;
+    footerImg1?: string;
+    footerImg2?: string;
+    img1?: string; 
+    img2?: string; 
+    img3?: string; 
   };
   rsvp: Array<{
     sender: string;
@@ -65,7 +77,10 @@ export interface WeddingDocument extends mongoose.Document {
     attendance: string;
     createdDate: Date;
   }>;
-  backsound?: string;
+  media:{
+    audio?:string;
+    youtubeVideoId?:string;
+  };
   category: string;
   path?: string; // Virtual property
   isActive:boolean;
@@ -82,8 +97,6 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       motherName: { type: String, required: true },
       orderInFamily: { type: String, required: true },
       instagram: { type: String },
-      bank: { type: String },
-      noRek: { type: String },
     },
     bride: {
       shortName: { type: String, required: true },
@@ -93,8 +106,6 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       motherName: { type: String, required: true },
       orderInFamily: { type: String, required: true },
       instagram: { type: String },
-      bank: { type: String },
-      noRek: { type: String },
     },
     quotes: {
       quote1: { type: String, required: true },
@@ -106,12 +117,15 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       time: { type: String, required: true },
       date: { type: String, required: true },
       place: { type: String, required: true },
+      address: { type: String },
       liveLink: { type: String },
     },
     resepsi: {
       time: { type: String, required: true },
       date: { type: String, required: true },
       place: { type: String, required: true },
+      address: { type: String },
+      liveLink: { type: String },
       mapsLink: { type: String },
     },
     loveStory: {
@@ -120,17 +134,34 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       theProposal: { type: String },
       marriage: { type: String },
     },
+    gift: {
+      isRecieveGift: {type: Boolean, required: true, default:false},
+      giftAddress: { type: String },
+      groomNoRek: { type: String },
+      groomBank: { type: String },
+      brideNoRek: { type: String },
+      brideBank: { type: String },
+    },
     imageUrl: {
       groomImg: { type: String },
       brideImg: { type: String },
       headerImg: { type: String },
       heroImg: { type: String},
       eventImg: { type: String },
+      eventImg2: { type: String },
       quoteImg: { type: String },
       loveStoryImg: { type: String },
       giftImg: { type: String },
       rsvpImg: { type: String },
       footerImg: { type: String },
+      footerImg2: { type: String },
+      Img1: { type: String },
+      Img2: { type: String },
+      Img3: { type: String },
+    },
+    media: {
+      audio: { type: String },
+      youtubeVideoId: { type: String },
     },
     rsvp: [
       {
@@ -140,7 +171,6 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
         createdDate: { type: Date, required: true, default: Date.now },
       },
     ],
-    backsound:{ type: String },
     category: { type: String, required: true, index: true },
     isActive: { type: Boolean, required: true, default:false},
     createdAt: { type: Date, default: Date.now },
