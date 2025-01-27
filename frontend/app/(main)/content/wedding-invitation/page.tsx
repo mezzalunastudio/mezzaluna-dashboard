@@ -790,12 +790,12 @@ const WeddingContentPage = () => {
 
                                     <div className="field">
                                         <label htmlFor="bank">Bank</label>
-                                        <InputText id="bank" value={weddingContent.groom.bank} disabled={isViewMode} onChange={(e) => onInputChange(e, 'groom.bank')} />
+                                        <InputText id="bank" value={weddingContent.gift.groomBank} disabled={isViewMode} onChange={(e) => onInputChange(e, 'groom.bank')} />
                                     </div>
 
                                     <div className="field">
                                         <label htmlFor="noRek">Rekening Bank</label>
-                                        <InputText id="noRek" keyfilter="int" value={weddingContent.groom.noRek} disabled={isViewMode} onChange={(e) => onInputChange(e, 'groom.noRek')} />
+                                        <InputText id="noRek" keyfilter="int" value={weddingContent.gift.groomNoRek} disabled={isViewMode} onChange={(e) => onInputChange(e, 'groom.noRek')} />
                                     </div>
                                 </Fieldset>
                             </div>
@@ -894,12 +894,12 @@ const WeddingContentPage = () => {
 
                                     <div className="field">
                                         <label htmlFor="bank">Bank</label>
-                                        <InputText id="bank" value={weddingContent.bride.bank} disabled={isViewMode} onChange={(e) => onInputChange(e, 'bride.bank')} />
+                                        <InputText id="bank" value={weddingContent.gift.brideBank} disabled={isViewMode} onChange={(e) => onInputChange(e, 'bride.bank')} />
                                     </div>
 
                                     <div className="field">
                                         <label htmlFor="noRek">Rekening Bank</label>
-                                        <InputText id="noRek" keyfilter="int" value={weddingContent.bride.noRek} disabled={isViewMode} onChange={(e) => onInputChange(e, 'bride.noRek')} />
+                                        <InputText id="noRek" keyfilter="int" value={weddingContent.gift.brideNoRek} disabled={isViewMode} onChange={(e) => onInputChange(e, 'bride.noRek')} />
                                     </div>
                                 </Fieldset>
                             </div>
@@ -1174,7 +1174,7 @@ const WeddingContentPage = () => {
                                     </div>
                                     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center mt-2">
                                         <div className="my-2">
-                                            <label htmlFor="marriage">footer Image {weddingContent.imageUrl.footerImg && <i className="pi pi-check" style={{ color: 'green' }} />}</label>
+                                            <label htmlFor="marriage">footer Image {weddingContent.imageUrl.footerImg1 && <i className="pi pi-check" style={{ color: 'green' }} />}</label>
                                         </div>
                                         <span>
                                             <div>
