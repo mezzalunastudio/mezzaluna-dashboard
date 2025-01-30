@@ -56,7 +56,8 @@ const WeddingContentPage = () => {
         { name: 'Rustic', code: 'rustic' },
         { name: 'Minimalist', code: 'minimalist' },
         { name: 'Elegant', code: 'elegant' },
-        { name: 'Modern', code: 'modern' }
+        { name: 'Modern', code: 'modern' },
+        { name: 'Monochrome', code: 'monochrome' }
     ];
 
     const hideDialog = () => {
