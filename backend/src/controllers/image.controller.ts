@@ -23,10 +23,9 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
     });
 
     await s3Client.send(command);
-    console.log("key:"+Key);
     
     res.status(200).json({
-      message: "File uploaded successfully",
+      message: "File uploaded successfully to s3",
       key: Key,
       url: await getPresignedUrl(Key)
     });
@@ -38,9 +37,13 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
 
 const getImageFile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { key } = req.params;
-    const url = await getPresignedUrl(key);
-    res.redirect(url);
+    const { category, pathname,imgname } = req.params;
+    const Key = `${category}/${pathname}/${imgname}`
+    const url = await getPresignedUrl(Key);
+    res.status(200).json({
+        message: "File loaded successfully from s3",
+        url: url
+      });
   } catch (err) {
     console.error('Download error:', err);
     res.status(500).json({ error: "Failed to retrieve file" });
@@ -49,10 +52,11 @@ const getImageFile = async (req: Request, res: Response): Promise<void> => {
 
 const deleteImage = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { key } = req.params;
+    const { category, pathname,imgname } = req.params;
+    const Key = `${category}/${pathname}/${imgname}`
     const command = new DeleteObjectCommand({
       Bucket: S3_BUCKET_NAME!,
-      Key: key,
+      Key,
     });
 
     await s3Client.send(command);

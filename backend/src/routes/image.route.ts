@@ -4,7 +4,7 @@ import { upload, uploadImage, getImageFile, deleteImage } from "../controllers/i
 const imageRouter = Router();
 
 imageRouter.post("/:category/:pathname/", upload.single("file"), uploadImage);
-imageRouter.get("/:key", getImageFile);
-imageRouter.delete("/:key", deleteImage);
+imageRouter.get("/:category/:pathname/:imgname", getImageFile);
+imageRouter.delete("/:category/:pathname/:imgname", deleteImage);
 
 export default imageRouter;
