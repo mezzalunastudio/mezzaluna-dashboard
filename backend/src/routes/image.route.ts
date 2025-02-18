@@ -3,7 +3,7 @@ import { upload, uploadImage, getImageFile, deleteImage } from "../controllers/i
 
 const imageRouter = Router();
 
-imageRouter.post("/upload", upload.single("file"), uploadImage);
+imageRouter.post("/:category/:pathname/", upload.single("file"), uploadImage);
 imageRouter.get("/:key", getImageFile);
 imageRouter.delete("/:key", deleteImage);
 

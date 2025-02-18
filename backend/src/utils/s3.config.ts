@@ -2,10 +2,11 @@ import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } fro
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from 'express';
-import { S3_BUCKET_NAME,AWS_REGION,AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID } from "../constants/env";
+import { S3_BUCKET_NAME,S3_ENDPOINT,AWS_REGION,AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID } from "../constants/env";
 
 const s3Client = new S3Client({
   region: AWS_REGION,
+  endpoint: S3_ENDPOINT,
   credentials: {
     accessKeyId: AWS_ACCESS_KEY_ID!,
     secretAccessKey: AWS_SECRET_ACCESS_KEY!,

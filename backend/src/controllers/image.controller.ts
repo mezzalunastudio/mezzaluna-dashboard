@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import multer from "multer";
 import { s3Client, generateFileKey, getPresignedUrl } from '../utils/s3.config';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3_BUCKET_NAME} from "../constants/env";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -12,7 +13,7 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const Key = generateFileKey(req, req.file);
+    const Key = generateFileKey(req,req.file);
     const command = new PutObjectCommand({
       Bucket: process.env.S3_BUCKET_NAME!,
       Key,
@@ -22,6 +23,7 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
     });
 
     await s3Client.send(command);
+    console.log("key:"+Key);
     
     res.status(200).json({
       message: "File uploaded successfully",
@@ -49,7 +51,7 @@ const deleteImage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { key } = req.params;
     const command = new DeleteObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME!,
+      Bucket: S3_BUCKET_NAME!,
       Key: key,
     });
 

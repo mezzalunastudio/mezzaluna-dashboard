@@ -187,40 +187,61 @@ const WeddingContentPage = () => {
         const fd = new FormData();
         fd.append('file', renamedFile); // Kirim file dengan nama yang sudah diubah
 
-        axios
-            .post(`http://localhost:4004/images/${weddingContent.category}/${weddingContent.path}`, fd)
-            .then((res) => {
-                // Tampilkan notifikasi sukses
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: res.data.message,
-                    life: 3000
-                });
+        try {
+            // Generate unique filename
+            const uniqueSuffix = Math.round(Math.random() * 1e9);
+            const fileExtension = file.name.split('.').pop();
+            const newFileName = `${imageName}-${uniqueSuffix}.${fileExtension}`;
 
-                setWeddingContent((prev) => ({
-                    ...prev,
-                    imageUrl: {
-                        ...prev.imageUrl,
-                        [imageName]: newFileName
-                    }
-                }));
+            // Rename file
+            const renamedFile = new File([file], newFileName, { type: file.type });
 
-                // Reset nama file
-                setImageName('');
-            })
-            .catch((er) => {
-                console.log(er);
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Failed Upload',
-                    detail: 'File failed uploaded.' + er,
-                    life: 3000
-                });
-            })
-            .finally(() => {
-                setImageDialog(false);
+            // Create FormData
+            const fd = new FormData();
+            fd.append('file', renamedFile);
+
+            // Send request to backend
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/images/${weddingContent.category}/${weddingContent.path}`, {
+                method: 'POST',
+                body: fd
             });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Upload failed');
+            }
+
+            // Show success message
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Success',
+                detail: data.message,
+                life: 3000
+            });
+
+            // Update state with the uploaded image URL
+            setWeddingContent((prev) => ({
+                ...prev,
+                imageUrl: {
+                    ...prev.imageUrl,
+                    [imageName]: data.url
+                }
+            }));
+
+            // Reset input
+            setImageName('');
+        } catch (error) {
+            console.error('Upload error:', error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Upload Failed',
+                detail: 'An error occurred while uploading the file.',
+                life: 3000
+            });
+        } finally {
+            setImageDialog(false);
+        }
     };
 
     const editWeddingContent = (weddingcontent: Demo.wedding) => {
