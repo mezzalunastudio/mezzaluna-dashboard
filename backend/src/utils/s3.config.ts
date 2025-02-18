@@ -2,12 +2,13 @@ import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } fro
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from 'express';
+import { S3_BUCKET_NAME,AWS_REGION,AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID } from "../constants/env";
 
 const s3Client = new S3Client({
-  region: process.env.npm i @aws-sdk/s3-request-presigner,
+  region: AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: AWS_ACCESS_KEY_ID!,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -19,7 +20,7 @@ const generateFileKey = (req: Request, file: Express.Multer.File): string => {
 
 const getPresignedUrl = async (Key: string): Promise<string> => {
   const command = new GetObjectCommand({
-    Bucket: process.env.S3_BUCKET_NAME!,
+    Bucket: S3_BUCKET_NAME!,
     Key,
   });
   
