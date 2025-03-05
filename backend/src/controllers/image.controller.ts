@@ -35,6 +35,7 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+//test redirect url if server in api.veslavia.com
 const getImageFile = async (req: Request, res: Response): Promise<void> => {
   try {
     const { category, pathname,imgname } = req.params;
