@@ -71,12 +71,6 @@ export interface WeddingDocument extends mongoose.Document {
     img2?: string; 
     img3?: string; 
   };
-  rsvp: Array<{
-    sender: string;
-    message: string;
-    attendance: string;
-    createdDate: Date;
-  }>;
   media:{
     audio?:string;
     youtubeVideoId?:string;
@@ -163,14 +157,6 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       audio: { type: String },
       youtubeVideoId: { type: String },
     },
-    rsvp: [
-      {
-        sender: { type: String, required: true },
-        message: { type: String, required: true },
-        attendance: { type: String, enum: ["Tidak hadir", "Hadir", "Ragu-ragu"], default: "Tidak hadir" },
-        createdDate: { type: Date, required: true, default: Date.now },
-      },
-    ],
     category: { type: String, required: true, index: true },
     isActive: { type: Boolean, required: true, default:false},
     createdAt: { type: Date, default: Date.now },
@@ -188,3 +174,4 @@ weddingSchema.virtual("path").get(function (this: WeddingDocument) {
 
 const WeddingModel = mongoose.model<WeddingDocument>("Wedding", weddingSchema);
 export default WeddingModel;
+

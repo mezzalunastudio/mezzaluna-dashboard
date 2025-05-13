@@ -1,5 +1,8 @@
+import { z } from "zod";
 import connectToDatabase from "../config/db";
 import { INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SERVER_TIMEOUT } from "../constants/http";
+// import RSVPModel from "../models/rsvp.model";
+import RSVPDemoModel from "../models/rsvpDemo";
 import WeddingModel from "../models/wedding.models";
 import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
@@ -19,25 +22,66 @@ export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) =
     return res.status(OK).json(filteredWeddings);
 });
 
-export const saveRspvHandler = catchErrors(async (req, res) => {
-  const { id } = req.params;
-  const { sender, message, attendance } = req.body;
-  const wedding = await WeddingModel.findOne({ _id: id, isActive: true });
-  appAssert(wedding, NOT_FOUND, "wedding content not found");
+// export const getRsvpByIdHandler = catchErrors(async(req, res)=>{  
+// const { weddingId } = req.params;
+// const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+// appAssert(wedding, NOT_FOUND, "wedding content not found");
+// const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
+//     return res.status(OK).json(rsvps);
+// });
 
-  const newRsvp = {
-    sender,
-    message,
-    attendance,
-    createdDate: new Date(),
-  };
+// export const saveRspvHandler = catchErrors(async (req, res) => {
+//   const { weddingId } = req.params;
+//   const { sender, message, attendance } = req.body;
+//   const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+//   appAssert(wedding, NOT_FOUND, "wedding content not found");
 
-  wedding.rsvp.push(newRsvp);
-
-  // Simpan dokumen yang telah diperbarui
-  const updatedWedding = await wedding.save();
+//   const newRSVP = new RSVPModel({
+//     weddingId: wedding._id,
+//     sender,
+//     message,
+//     attendance,
+//   });
+//   await newRSVP.save();
     
-    appAssert(updatedWedding, INTERNAL_SERVER_ERROR, "Failed to save rsvp");
-    return res.status(201).json(updatedWedding);
+//     appAssert(newRSVP, INTERNAL_SERVER_ERROR, "Failed to save rsvp");
+//     const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
+//     return res.status(201).json({ message: "rsvp saved successfully" });
+// });
+
+export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{  
+  const { template } = req.params;
+  console.log(template);
+  const rsvps = await RSVPDemoModel.find({ template: template }).exec();
+  appAssert(rsvps, NOT_FOUND, "RSVP not found");
+  return res.status(OK).json(rsvps);
+  });
+  
+
+export const SaveRspvDemoHandler = catchErrors(async (req, res) => {
+  const rsvpData = req.body;
+  const newRsvp = new RSVPDemoModel(rsvpData);
+  const savedWedding = await newRsvp.save();
+  appAssert(savedWedding, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
+  return res.status(201).json({ message: "RSVP saved successfully" });
 });
+
+export const deleteRsvpDemoHandler = catchErrors(async (req, res) => {
+  const sessionId = z.string().parse(req.params.id);
+  const deleted = await RSVPDemoModel.findOneAndDelete({
+    _id: sessionId
+  });
+  appAssert(deleted, INTERNAL_SERVER_ERROR, "Failed to remove rsvp");
+  appAssert(deleted, NOT_FOUND, "rsvp not found");
+  return res.status(OK).json({ message: "rsvp removed" });
+});
+
+
+  export const SaveWeddingHandler = catchErrors(async (req, res) => {
+    const weddingData = req.body;
+    const newWedding = new WeddingModel(weddingData);
+    const savedWedding = await newWedding.save();
+    appAssert(savedWedding, INTERNAL_SERVER_ERROR, "Failed to add wedding content");
+    return res.status(201).json({ message: "Wedding Content saved successfully" });
+  });
 
