@@ -26,5 +26,5 @@ const rsvpDemoSchema = new mongoose.Schema<RSVPDemoDocument>(
   }
 );
 
-const RSVPDemoModel = mongoose.model<RSVPDemoDocument>("RSVP", rsvpDemoSchema);
+const RSVPDemoModel = mongoose.model<RSVPDemoDocument>("RSVPDemo", rsvpDemoSchema);
 export default RSVPDemoModel;

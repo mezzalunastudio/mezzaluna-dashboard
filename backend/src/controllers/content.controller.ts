@@ -6,6 +6,7 @@ import RSVPDemoModel from "../models/rsvpDemo";
 import WeddingModel from "../models/wedding.models";
 import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
+import RSVPModel from "../models/rsvp.model";
 
 export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) => {
   console.time("DB Query Time");
@@ -22,36 +23,39 @@ export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) =
     return res.status(OK).json(filteredWeddings);
 });
 
-// export const getRsvpByIdHandler = catchErrors(async(req, res)=>{  
-// const { weddingId } = req.params;
-// const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
-// appAssert(wedding, NOT_FOUND, "wedding content not found");
-// const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
-//     return res.status(OK).json(rsvps);
-// });
+export const getRsvpByIdHandler = catchErrors(async(req, res)=>{  
+const { weddingId } = req.params;
+const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+appAssert(wedding, NOT_FOUND, "wedding content not found");
+const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
+    return res.status(OK).json(rsvps);
+});
 
-// export const saveRspvHandler = catchErrors(async (req, res) => {
-//   const { weddingId } = req.params;
-//   const { sender, message, attendance } = req.body;
-//   const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
-//   appAssert(wedding, NOT_FOUND, "wedding content not found");
+export const saveRspvHandler = catchErrors(async (req, res) => {
+  const { weddingId } = req.params;
+  const rsvpData = req.body;
+  console.log(JSON.stringify(rsvpData));
+  const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+  appAssert(wedding, NOT_FOUND, "wedding content not found");
+  const newRsvp = new RSVPModel(rsvpData);
+  const saveRsvp = await newRsvp.save();
+  appAssert(saveRsvp, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
+  return res.status(201).json({ message: "RSVP saved successfully" });
+});
 
-//   const newRSVP = new RSVPModel({
-//     weddingId: wedding._id,
-//     sender,
-//     message,
-//     attendance,
-//   });
-//   await newRSVP.save();
-    
-//     appAssert(newRSVP, INTERNAL_SERVER_ERROR, "Failed to save rsvp");
-//     const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
-//     return res.status(201).json({ message: "rsvp saved successfully" });
-// });
+export const deleteRsvpHandler = catchErrors(async (req, res) => {
+  const rsvpId = z.string().parse(req.params.id);
+  const deleted = await RSVPModel.findOneAndDelete({
+    _id: rsvpId
+  });
+  appAssert(deleted, INTERNAL_SERVER_ERROR, "Failed to remove rsvp");
+  appAssert(deleted, NOT_FOUND, "rsvp not found");
+  return res.status(OK).json({ message: "rsvp removed" });
+});
+
 
 export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{  
   const { template } = req.params;
-  console.log(template);
   const rsvps = await RSVPDemoModel.find({ template: template }).exec();
   appAssert(rsvps, NOT_FOUND, "RSVP not found");
   return res.status(OK).json(rsvps);
@@ -61,15 +65,15 @@ export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{
 export const SaveRspvDemoHandler = catchErrors(async (req, res) => {
   const rsvpData = req.body;
   const newRsvp = new RSVPDemoModel(rsvpData);
-  const savedWedding = await newRsvp.save();
-  appAssert(savedWedding, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
+  const saveRsvp = await newRsvp.save();
+  appAssert(saveRsvp, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
   return res.status(201).json({ message: "RSVP saved successfully" });
 });
 
 export const deleteRsvpDemoHandler = catchErrors(async (req, res) => {
-  const sessionId = z.string().parse(req.params.id);
+  const rsvpId = z.string().parse(req.params.id);
   const deleted = await RSVPDemoModel.findOneAndDelete({
-    _id: sessionId
+    _id: rsvpId
   });
   appAssert(deleted, INTERNAL_SERVER_ERROR, "Failed to remove rsvp");
   appAssert(deleted, NOT_FOUND, "rsvp not found");
