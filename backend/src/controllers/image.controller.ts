@@ -19,7 +19,7 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
       Key,
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
-      ACL: 'private',
+      ACL: 'public-read',
     });
 
     await s3Client.send(command);
@@ -37,8 +37,13 @@ const uploadImage = async (req: Request, res: Response): Promise<void> => {
 
 //test redirect url if server in api.veslavia.com
 const getImageFile = async (req: Request, res: Response): Promise<void> => {
+ 
   try {
     const { category, pathname,imgname } = req.params;
+     if (!category || !pathname || !imgname) {
+  res.status(400).json({ error: "Invalid parameters" });
+  return;
+}
     const Key = `${category}/${pathname}/${imgname}`
     const url = await getPresignedUrl(Key);
     res.status(200).json({
@@ -68,4 +73,27 @@ const deleteImage = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { upload, uploadImage, getImageFile, deleteImage };
+const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { keys } = req.body; // List key gambar
+    if (!keys || !Array.isArray(keys)) {
+      res.status(400).json({ error: "Keys parameter is missing or invalid" });
+      return;
+    }
+
+    // Generate URL untuk setiap key
+    const urls = await Promise.all(
+      keys.map(async (key) => ({
+        key,
+        url: await getPresignedUrl(key),
+      }))
+    );
+
+    res.status(200).json({ urls });
+  } catch (err) {
+    console.error("Error generating batch pre-signed URLs:", err);
+    res.status(500).json({ error: "Failed to generate batch pre-signed URLs" });
+  }
+};
+
+export { upload, uploadImage, getImageFile, deleteImage, getBatchImageUrls };

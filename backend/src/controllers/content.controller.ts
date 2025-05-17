@@ -65,6 +65,7 @@ export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{
 export const SaveRspvDemoHandler = catchErrors(async (req, res) => {
   const rsvpData = req.body;
   const newRsvp = new RSVPDemoModel(rsvpData);
+  console.log(JSON.stringify(newRsvp));
   const saveRsvp = await newRsvp.save();
   appAssert(saveRsvp, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
   return res.status(201).json({ message: "RSVP saved successfully" });
