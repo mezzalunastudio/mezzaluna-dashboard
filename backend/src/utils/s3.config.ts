@@ -13,10 +13,10 @@ const s3Client = new S3Client({
   },
 });
 
-const generateFileKey = (req: Request, file: Express.Multer.File): string => {
+const generateFileKey = (req: Request, file: Express.Multer.File, type: string): string => {
   const { category, pathname } = req.params;
   const extension = file.originalname.split('.').pop();
-  return `${category}/${pathname}/${uuidv4()}.${extension}`;
+  return `${category}/${pathname}/${type}/${uuidv4()}.${extension}`;
 };
 
 const getPresignedUrl = async (Key: string): Promise<string> => {

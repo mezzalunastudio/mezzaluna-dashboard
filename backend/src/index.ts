@@ -12,6 +12,7 @@ import weddingRoute from "./routes/wedding.route";
 import sessionRoutes from "./routes/session.route";
 import contentRoutes from "./routes/content.route";
 import imageRoutes from "./routes/image.route";
+import audioRoutes from "./routes/audio.route";
 import { APP_ORIGIN,ALLOWED_ORIGIN, NODE_ENV, PORT } from "./constants/env";
 import originCheck from "./middleware/originCheck";
 
@@ -48,6 +49,7 @@ app.use("/wedding", authenticate, weddingRoute);
 //open routes
 app.use("/content",contentRoutes);
 app.use("/images",imageRoutes);
+app.use("/audio",audioRoutes);
 
 // error handler
 app.use(errorHandler);
