@@ -50,9 +50,9 @@ app.use("/sessions", authenticate, sessionRoutes);
 app.use("/wedding", authenticate, weddingRoute);
 
 //open routes
-app.use("/content",originCheck,contentRoutes);
-app.use("/images",originCheck,imageRoutes);
-app.use("/audio",originCheck, audioRoutes);
+app.use("/content",contentRoutes);
+app.use("/images",imageRoutes);
+app.use("/audio", audioRoutes);
 
 // error handler
 app.use(errorHandler);
