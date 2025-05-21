@@ -25,7 +25,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: [APP_ORIGIN, ALLOWED_ORIGIN],
+    origin: [
+      'https://veslavia.com', // Frontend domain
+      'https://api.veslavia.com', // API domain (if needed for testing)
+    ],
     credentials: true,
   })
 );
