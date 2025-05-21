@@ -25,10 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: [
-      'https://veslavia.com', // Frontend domain
-      'https://api.veslavia.com', // API domain (if needed for testing)
-    ],
+    origin: [APP_ORIGIN, ALLOWED_ORIGIN],
     credentials: true,
   })
 );
@@ -50,9 +47,9 @@ app.use("/sessions", authenticate, sessionRoutes);
 app.use("/wedding", authenticate, weddingRoute);
 
 //open routes
-app.use("/content",contentRoutes);
-app.use("/images",imageRoutes);
-app.use("/audio", audioRoutes);
+app.use("/content",originCheck,contentRoutes);
+app.use("/images",originCheck,imageRoutes);
+app.use("/audio",originCheck,audioRoutes);
 
 // error handler
 app.use(errorHandler);
