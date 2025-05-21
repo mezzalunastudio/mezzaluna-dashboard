@@ -179,4 +179,21 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
     });
   }
 };
-export { upload, uploadImage, getImageFile, deleteImage, getBatchImageUrls , cutAndUploadAudio};
+
+const getAudioUrls = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { key } = req.body; 
+    if (!key) {
+      res.status(400).json({ error: "Keys parameter is missing or invalid" });
+      return;
+    }
+
+    const url = await getPresignedUrl(key);
+
+    res.status(200).json({url});
+  } catch (err) {
+    console.error("Error generating pre-signed URL:", err);
+    res.status(500).json({ error: "Failed to generate pre-signed URL" });
+  }
+};
+export { upload, uploadImage, getImageFile, deleteImage, getBatchImageUrls , cutAndUploadAudio, getAudioUrls};
