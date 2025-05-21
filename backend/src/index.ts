@@ -27,6 +27,8 @@ app.use(
   cors({
     origin: [APP_ORIGIN, ALLOWED_ORIGIN],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 app.use(cookieParser());
@@ -34,7 +36,7 @@ app.use("/public", express.static(path.join(__dirname, "../public")));
 // health check
 app.get("/", (_, res) => {
   return res.status(200).json({
-    status: "hello world.",
+    status: `${APP_ORIGIN}|${ALLOWED_ORIGIN}`,
   });
 });
 // auth routes
@@ -48,8 +50,8 @@ app.use("/wedding", authenticate, weddingRoute);
 
 //open routes
 app.use("/content",originCheck,contentRoutes);
-app.use("/images",originCheck,imageRoutes);
-app.use("/audio",originCheck,audioRoutes);
+app.use("/images",originCheck, imageRoutes);
+app.use("/audio",originCheck, audioRoutes);
 
 // error handler
 app.use(errorHandler);
