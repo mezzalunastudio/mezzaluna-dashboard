@@ -36,7 +36,7 @@ app.use("/public", express.static(path.join(__dirname, "../public")));
 // health check
 app.get("/", (_, res) => {
   return res.status(200).json({
-    status: `${APP_ORIGIN}|${ALLOWED_ORIGIN}`,
+    status: `hello world.`,
   });
 });
 // auth routes
