@@ -7,7 +7,7 @@ export interface WeddingDocument extends mongoose.Document {
     fullNameWithTitle: string;
     fatherName: string;
     motherName: string;
-    orderInFamily: string;
+    orderInFamily?: string;
     instagram?: string;
   };
   bride: {
@@ -16,7 +16,7 @@ export interface WeddingDocument extends mongoose.Document {
     fullNameWithTitle: string;
     fatherName: string;
     motherName: string;
-    orderInFamily: string;
+    orderInFamily?: string;
     instagram?: string;
   };
   quotes: {
@@ -89,7 +89,7 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       fullNameWithTitle: { type: String, required: true },
       fatherName: { type: String, required: true },
       motherName: { type: String, required: true },
-      orderInFamily: { type: String, required: true },
+      orderInFamily: { type: String},
       instagram: { type: String },
     },
     bride: {
@@ -98,7 +98,7 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       fullNameWithTitle: { type: String, required: true },
       fatherName: { type: String, required: true },
       motherName: { type: String, required: true },
-      orderInFamily: { type: String, required: true },
+      orderInFamily: { type: String },
       instagram: { type: String },
     },
     quotes: {
