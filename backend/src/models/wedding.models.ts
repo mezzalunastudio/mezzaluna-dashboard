@@ -33,6 +33,7 @@ export interface WeddingDocument extends mongoose.Document {
     liveLink?: string;
   };
   resepsi: {
+    isResepsi: boolean;
     time: string;
     date: string;
     place: string;
@@ -115,6 +116,8 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       liveLink: { type: String },
     },
     resepsi: {
+      isResepsi: {type: Boolean, required: true, default:true},
+      firstMeet: { type: String },
       time: { type: String, required: true },
       date: { type: String, required: true },
       place: { type: String, required: true },
