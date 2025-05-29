@@ -30,6 +30,17 @@ app.use(
   })
 );
 app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`Incoming request: ${req.method} ${req.url} from Origin: ${req.headers.origin}`);
+  
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    console.log(`Request completed: ${req.method} ${req.url} - ${res.statusCode} in ${duration}ms`);
+  });
+
+  next();
+});
+app.use((req, res, next) => {
   console.log('CORS check - Origin:', req.headers.origin);
   next();
 });
