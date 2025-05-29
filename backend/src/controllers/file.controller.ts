@@ -105,6 +105,7 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
   try {
     const file = req.file;
     const { startTime = 0, duration = 60, category, path: pathname } = req.body;
+
     if (!file) {
       return res.status(400).json({ error: "Audio file is required" });
     }
@@ -112,17 +113,12 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
     // Validate inputs
     const start = parseFloat(startTime);
     const dur = parseFloat(duration);
-    if (isNaN(start) || isNaN(dur) ){
+    if (isNaN(start) || isNaN(dur)) {
       return res.status(400).json({ error: "Invalid timestamp parameters" });
     }
 
-    // Create temp directory if not exists
-    const tempDir = path.join(__dirname, "../temp");
-    if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir, { recursive: true });
-    }
-
-    // File paths
+    // Use Vercel's /tmp directory
+    const tempDir = "/tmp";
     const tempInputPath = path.join(tempDir, file.originalname);
     const tempOutputPath = path.join(tempDir, `cut-${Date.now()}-${file.originalname}`);
 
@@ -130,6 +126,7 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
     fs.writeFileSync(tempInputPath, file.buffer);
 
     ffmpeg.setFfmpegPath(ffmpegStatic!);
+
     // Use FFmpeg to cut the audio
     await new Promise((resolve, reject) => {
       ffmpeg(tempInputPath)
@@ -173,12 +170,13 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
     });
   } catch (err) {
     console.error("Error processing audio:", err);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to process and upload audio",
-      details: err instanceof Error ? err.message : String(err)
+      details: err instanceof Error ? err.message : String(err),
     });
   }
 };
+
 
 const getAudioUrls = async (req: Request, res: Response): Promise<void> => {
   try {
