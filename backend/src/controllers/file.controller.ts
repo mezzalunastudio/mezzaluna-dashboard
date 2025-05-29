@@ -125,6 +125,14 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
     // Save uploaded audio to a temporary file
     fs.writeFileSync(tempInputPath, file.buffer);
 
+    const ffmpegPath = require("ffmpeg-static");
+if (!ffmpegPath) {
+  throw new Error("FFmpeg not found. Ensure ffmpeg-static is installed and included in dependencies.");
+}
+
+ffmpeg.setFfmpegPath(ffmpegPath);
+
+
     ffmpeg.setFfmpegPath(ffmpegStatic!);
 
     // Use FFmpeg to cut the audio
