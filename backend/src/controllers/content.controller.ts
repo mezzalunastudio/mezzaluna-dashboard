@@ -34,7 +34,6 @@ const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
 export const saveRspvHandler = catchErrors(async (req, res) => {
   const { weddingId } = req.params;
   const rsvpData = req.body;
-  console.log(JSON.stringify(rsvpData));
   const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
   appAssert(wedding, NOT_FOUND, "wedding content not found");
   const newRsvp = new RSVPModel(rsvpData);
@@ -65,7 +64,6 @@ export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{
 export const SaveRspvDemoHandler = catchErrors(async (req, res) => {
   const rsvpData = req.body;
   const newRsvp = new RSVPDemoModel(rsvpData);
-  console.log(JSON.stringify(newRsvp));
   const saveRsvp = await newRsvp.save();
   appAssert(saveRsvp, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
   return res.status(201).json({ message: "RSVP saved successfully" });
