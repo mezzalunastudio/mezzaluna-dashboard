@@ -29,7 +29,7 @@ app.use(
     credentials: true,
   })
 );
-app.options('*', cors());
+// app.options('*', cors());
 app.use((req, res, next) => {
   console.log('CORS check - Origin:', req.headers.origin);
   next();
