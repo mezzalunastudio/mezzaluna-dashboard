@@ -7,6 +7,7 @@ import WeddingModel from "../models/wedding.models";
 import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
 import RSVPModel from "../models/rsvp.model";
+import mongoose from "mongoose";
 
 export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) => {
   console.time("DB Query Time");
@@ -14,27 +15,43 @@ export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) =
     const { path } = req.params;
     // Fetch weddings with other criteria
     await connectToDatabase();
-    const wedding = await WeddingModel.find({ category, isActive: true }).limit(10);
+      const wedding = await WeddingModel.findOne({ 
+    category,
+    path, 
+    isActive: true 
+  });
     console.timeEnd("DB Query Time");
     appAssert(wedding,SERVER_TIMEOUT, "Request timed out");
   // Filter in memory based on virtual property
-    const filteredWeddings = wedding.filter((wedding) => wedding.path === path);
     appAssert(wedding, NOT_FOUND, "wedding content not found");
-    return res.status(OK).json(filteredWeddings);
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(OK).json(wedding);
 });
 
 export const getRsvpByIdHandler = catchErrors(async(req, res)=>{  
 const { weddingId } = req.params;
+if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+     return res.status(400).json({ error: "Invalid ID format" });
+  }
+  await connectToDatabase();
+  console.time("DB Query Time");
 const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+console.timeEnd("DB Query Time");
 appAssert(wedding, NOT_FOUND, "wedding content not found");
 const rsvps = await RSVPModel.find({ weddingId: wedding._id }).exec();
+res.setHeader('Cache-Control', 'no-store');
     return res.status(OK).json(rsvps);
 });
 
 export const saveRspvHandler = catchErrors(async (req, res) => {
   const { weddingId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(weddingId)) {
+     return res.status(400).json({ error: "Invalid ID format" });
+  }
   const rsvpData = req.body;
-  const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+    console.time("DB Query Time");
+const wedding = await WeddingModel.findOne({ _id: weddingId, isActive: true });
+console.timeEnd("DB Query Time");
   appAssert(wedding, NOT_FOUND, "wedding content not found");
   const newRsvp = new RSVPModel(rsvpData);
   const saveRsvp = await newRsvp.save();
@@ -44,6 +61,9 @@ export const saveRspvHandler = catchErrors(async (req, res) => {
 
 export const deleteRsvpHandler = catchErrors(async (req, res) => {
   const rsvpId = z.string().parse(req.params.id);
+  if (!mongoose.Types.ObjectId.isValid(rsvpId)) {
+     return res.status(400).json({ error: "Invalid ID format" });
+  }
   const deleted = await RSVPModel.findOneAndDelete({
     _id: rsvpId
   });
@@ -55,8 +75,12 @@ export const deleteRsvpHandler = catchErrors(async (req, res) => {
 
 export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{  
   const { template } = req.params;
-  const rsvps = await RSVPDemoModel.find({ template: template }).exec();
+   await connectToDatabase();
+    console.time("DB Query Time");
+ const rsvps = await RSVPDemoModel.find({ template: template }).exec();
+console.timeEnd("DB Query Time");
   appAssert(rsvps, NOT_FOUND, "RSVP not found");
+  res.setHeader('Cache-Control', 'no-store');
   return res.status(OK).json(rsvps);
   });
   
@@ -64,7 +88,9 @@ export const getRsvpDemoByTemplate = catchErrors(async(req, res)=>{
 export const SaveRspvDemoHandler = catchErrors(async (req, res) => {
   const rsvpData = req.body;
   const newRsvp = new RSVPDemoModel(rsvpData);
-  const saveRsvp = await newRsvp.save();
+      console.time("DB Query Time");
+   const saveRsvp = await newRsvp.save();
+console.timeEnd("DB Query Time");
   appAssert(saveRsvp, INTERNAL_SERVER_ERROR, "Failed to add RSVP");
   return res.status(201).json({ message: "RSVP saved successfully" });
 });
@@ -83,7 +109,9 @@ export const deleteRsvpDemoHandler = catchErrors(async (req, res) => {
   export const SaveWeddingHandler = catchErrors(async (req, res) => {
     const weddingData = req.body;
     const newWedding = new WeddingModel(weddingData);
-    const savedWedding = await newWedding.save();
+      console.time("DB Query Time");
+  const savedWedding = await newWedding.save();
+console.timeEnd("DB Query Time");
     appAssert(savedWedding, INTERNAL_SERVER_ERROR, "Failed to add wedding content");
     return res.status(201).json({ message: "Wedding Content saved successfully" });
   });

@@ -10,7 +10,7 @@ export interface RSVPDemoDocument extends mongoose.Document {
 
 const rsvpDemoSchema = new mongoose.Schema<RSVPDemoDocument>(
   {
-    template:{ type: String, required: true },
+    template:{ type: String, required: true , index: true},
     sender: { type: String, required: true },
     message: { type: String, required: true },
     attendance: {
@@ -25,6 +25,7 @@ const rsvpDemoSchema = new mongoose.Schema<RSVPDemoDocument>(
     toObject: { virtuals: true },
   }
 );
+rsvpDemoSchema.index({ template: 1 });
 
 const RSVPDemoModel = mongoose.model<RSVPDemoDocument>("RSVPDemo", rsvpDemoSchema);
 export default RSVPDemoModel;

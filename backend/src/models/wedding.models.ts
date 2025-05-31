@@ -160,8 +160,9 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       audio: { type: String },
       youtubeVideoId: { type: String },
     },
+    path: { type: String, index: true }, 
     category: { type: String, required: true, index: true },
-    isActive: { type: Boolean, required: true, default:false},
+    isActive: { type: Boolean, required: true,index: true, default:false},
     createdAt: { type: Date, default: Date.now },
   },
   {
@@ -169,6 +170,21 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
     toObject: { virtuals: true },
   }
 );
+weddingSchema.index({ category: 1, isActive: 1 });
+weddingSchema.index({ path: 1 });
+
+// Virtual property untuk kompatibilitas
+weddingSchema.virtual('calculatedPath').get(function(this: WeddingDocument) {
+  return (`${this.groom.shortName}-${this.bride.shortName}`).toLowerCase();
+});
+
+// Pre-save hook untuk mengisi field path
+weddingSchema.pre('save', function(next) {
+  if (this.isModified('groom.shortName') || this.isModified('bride.shortName') || !this.path) {
+    this.path = (`${this.groom.shortName}-${this.bride.shortName}`).toLowerCase();
+  }
+  next();
+});
 
 // Virtual property for the `path`
 weddingSchema.virtual("path").get(function (this: WeddingDocument) {
