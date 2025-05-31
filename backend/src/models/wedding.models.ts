@@ -186,9 +186,11 @@ weddingSchema.pre('save', function(next) {
   next();
 });
 
-// Virtual property for the `path`
-weddingSchema.virtual("path").get(function (this: WeddingDocument) {
-  return (`${this.groom.shortName}-${this.bride.shortName}`).toLowerCase();
+weddingSchema.pre('save', function(next) {
+  if (this.isModified('groom.shortName') || this.isModified('bride.shortName')) {
+    this.path = `${this.groom.shortName}-${this.bride.shortName}`.toLowerCase();
+  }
+  next();
 });
 
 const WeddingModel = mongoose.model<WeddingDocument>("Wedding", weddingSchema);
