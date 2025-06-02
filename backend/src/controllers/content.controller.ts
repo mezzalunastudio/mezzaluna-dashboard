@@ -22,8 +22,8 @@ export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) =
   // Filter in memory based on virtual property
   const filteredWeddings = wedding.filter((wedding) => wedding.path === path);
   appAssert(filteredWeddings, NOT_FOUND, "wedding content not found");
-    res.setHeader('Cache-Control', 'no-store');
-    return res.status(OK).json(wedding);
+    // res.setHeader('Cache-Control', 'no-store');
+    return res.status(OK).json(filteredWeddings);
 });
 
 export const getRsvpByIdHandler = catchErrors(async(req, res)=>{  
