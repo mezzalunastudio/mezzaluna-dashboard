@@ -26,7 +26,11 @@ export interface WeddingDocument extends mongoose.Document {
     quote2From?: string;
   };
   akad: {
-    time: string;
+    time?: string;
+    timeRange?: {
+    start: string;
+    end: string;
+  };
     date: string;
     place: string;
     address:string;
@@ -34,7 +38,11 @@ export interface WeddingDocument extends mongoose.Document {
   };
   resepsi: {
     isResepsi: boolean;
-    time: string;
+    time?: string;
+    timeRange?: {
+    start: string;
+    end: string;
+  };
     date: string;
     place: string;
     address:string;
@@ -109,7 +117,11 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       quote2From: { type: String },
     },
     akad: {
-      time: { type: String, required: true },
+      time: { type: String },
+       timeRange: {
+        start: { type: String},
+        end: { type: String }
+      },
       date: { type: String, required: true },
       place: { type: String, required: true },
       address: { type: String },
@@ -118,7 +130,11 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
     resepsi: {
       isResepsi: {type: Boolean, required: true, default:true},
       firstMeet: { type: String },
-      time: { type: String, required: true },
+      time: { type: String },
+      timeRange: {
+        start: { type: String },
+        end: { type: String}
+      },
       date: { type: String, required: true },
       place: { type: String, required: true },
       address: { type: String },
@@ -189,6 +205,25 @@ weddingSchema.pre('save', function(next) {
 weddingSchema.pre('save', function(next) {
   if (this.isModified('groom.shortName') || this.isModified('bride.shortName')) {
     this.path = `${this.groom.shortName}-${this.bride.shortName}`.toLowerCase();
+  }
+  next();
+});
+
+weddingSchema.pre('save', function (next) {
+  if (typeof this.akad.timeRange === 'string') {
+    try {
+      this.akad.timeRange = JSON.parse(this.akad.timeRange);
+    } catch (e) {
+      return next(new Error('Invalid JSON format for akad.timeRange'));
+    }
+  }
+
+  if (typeof this.resepsi.timeRange === 'string') {
+    try {
+      this.resepsi.timeRange = JSON.parse(this.resepsi.timeRange);
+    } catch (e) {
+      return next(new Error('Invalid JSON format for resepsi.timeRange'));
+    }
   }
   next();
 });
