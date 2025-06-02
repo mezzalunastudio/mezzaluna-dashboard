@@ -15,14 +15,12 @@ export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) =
     const { path } = req.params;
     // Fetch weddings with other criteria
     await connectToDatabase();
-      const wedding = await WeddingModel.findOne({ 
-    category,
-    path, 
-    isActive: true 
-  });
+    const wedding = await WeddingModel.find({ category, isActive: true }).limit(10);
     console.timeEnd("DB Query Time");
+      
     appAssert(wedding,SERVER_TIMEOUT, "Request timed out");
   // Filter in memory based on virtual property
+  const filteredWeddings = wedding.filter((wedding) => wedding.path === path);
     appAssert(wedding, NOT_FOUND, "wedding content not found");
     res.setHeader('Cache-Control', 'no-store');
     return res.status(OK).json(wedding);
