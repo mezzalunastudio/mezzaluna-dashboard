@@ -101,7 +101,7 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
- const cutAndUploadAudio = async (req: Request, res: Response) => {
+const cutAndUploadAudio = async (req: Request, res: Response) => {
   try {
     const file = req.file;
     const { startTime = 0, duration = 60, category, path: pathname } = req.body;
@@ -117,20 +117,20 @@ const getBatchImageUrls = async (req: Request, res: Response): Promise<void> => 
       return res.status(400).json({ error: "Invalid timestamp parameters" });
     }
 
-    // Use Vercel's /tmp directory
-    const tempDir = "/tmp";
+    // Create temp directory if it doesn't exist
+    const tempDir = path.join(process.cwd(), 'temp');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
     const tempInputPath = path.join(tempDir, file.originalname);
     const tempOutputPath = path.join(tempDir, `cut-${Date.now()}-${file.originalname}`);
 
     // Save uploaded audio to a temporary file
     fs.writeFileSync(tempInputPath, file.buffer);
 
-   const ffmpegPath = require("ffmpeg-static");
-if (!ffmpegPath) {
-  throw new Error("FFmpeg not found. Ensure ffmpeg-static is installed and included in dependencies.");
-}
-
-ffmpeg.setFfmpegPath(ffmpegPath);
+    // Set FFmpeg path
+    ffmpeg.setFfmpegPath(ffmpegStatic!);
 
     // Use FFmpeg to cut the audio
     await new Promise((resolve, reject) => {
@@ -182,7 +182,6 @@ ffmpeg.setFfmpegPath(ffmpegPath);
   }
 };
 
-
 const getAudioUrls = async (req: Request, res: Response): Promise<void> => {
   try {
     const { key } = req.body; 
@@ -192,7 +191,6 @@ const getAudioUrls = async (req: Request, res: Response): Promise<void> => {
     }
 
     const url = await getPresignedUrl(key);
-
     res.status(200).json({url});
   } catch (err) {
     console.error("Error generating pre-signed URL:", err);
