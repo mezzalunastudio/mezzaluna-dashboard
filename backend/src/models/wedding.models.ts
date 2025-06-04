@@ -58,8 +58,10 @@ export interface WeddingDocument extends mongoose.Document {
   gift:{
     isRecieveGift:boolean;
     giftAddress?:string;
+    nameNorek1?:string;
     groomBank?: string;
     groomNoRek?: string;
+    nameNorek2?:string;
     brideBank?: string;
     brideNoRek?: string;
   };
@@ -150,8 +152,10 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
     gift: {
       isRecieveGift: {type: Boolean, required: true, default:false},
       giftAddress: { type: String },
+      nameNoRek1: { type: String },
       groomNoRek: { type: String },
       groomBank: { type: String },
+      nameNoRek2: { type: String },
       brideNoRek: { type: String },
       brideBank: { type: String },
     },

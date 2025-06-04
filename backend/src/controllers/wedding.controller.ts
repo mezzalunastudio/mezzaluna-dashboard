@@ -25,7 +25,7 @@ export const getWeddingHandler = catchErrors(async (req, res, next) => {
     const deletedWedding = await weddingModel.findByIdAndDelete(id);
     appAssert(deletedWedding, NOT_FOUND, "wedding content not found");
     return res.status(OK).json({ message: "wedding content removed" });
-  }
+  } 
 );
 
 export const updateWeddingHandler = catchErrors(async (req, res) => {

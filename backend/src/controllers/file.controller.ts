@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import multer from "multer";
 import { s3Client, generateFileKey, getPresignedUrl } from '../utils/s3.config';
-import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { S3_BUCKET_NAME} from "../constants/env";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import path from "path";
 import ffmpegStatic from 'ffmpeg-static';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -182,19 +183,28 @@ const cutAndUploadAudio = async (req: Request, res: Response) => {
   }
 };
 
-const getAudioUrls = async (req: Request, res: Response): Promise<void> => {
+
+const getAudioUrls = async (req: Request, res: Response) => {
   try {
-    const { key } = req.body; 
-    if (!key) {
-      res.status(400).json({ error: "Keys parameter is missing or invalid" });
-      return;
+    const { key } = req.body;
+    if (!key || typeof key !== "string") {
+      return res.status(400).json({ error: "Audio key is required" });
     }
 
-    const url = await getPresignedUrl(key);
-    res.status(200).json({url});
+   const command = new GetObjectCommand({
+  Bucket: process.env.S3_BUCKET_NAME,
+  Key: key,
+  ResponseContentType: 'audio/mpeg',
+  // Tambahkan header untuk kontrol cache dan CORS
+  ResponseCacheControl: 'public, max-age=3600',
+  ResponseContentDisposition: 'inline', // Untuk memastikan audio diputar, bukan didownload
+});
+
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+    res.status(200).json({ url });
   } catch (err) {
-    console.error("Error generating pre-signed URL:", err);
-    res.status(500).json({ error: "Failed to generate pre-signed URL" });
+    console.error("Error generating presigned URL:", err);
+    res.status(500).json({ error: "Failed to generate presigned URL" });
   }
-};
+}
 export { upload, uploadImage, getImageFile, deleteImage, getBatchImageUrls , cutAndUploadAudio, getAudioUrls};
