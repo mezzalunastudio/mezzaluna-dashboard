@@ -11,19 +11,25 @@ import mongoose from "mongoose";
 
 export const getWeddingContentByCategoryHandler = catchErrors(async (req, res) => {
   console.time("DB Query Time");
-    const { category } = req.params;
-    const { path } = req.params;
-    // Fetch weddings with other criteria
-    await connectToDatabase();
-    const wedding = await WeddingModel.find({ category, isActive: true }).limit(10);
-    console.timeEnd("DB Query Time");
-      console.log()
-    appAssert(wedding,SERVER_TIMEOUT, "Request timed out");
-  // Filter in memory based on virtual property
-  const filteredWeddings = wedding.filter((wedding) => wedding.path === path);
-  appAssert(filteredWeddings, NOT_FOUND, "wedding content not found");
-    // res.setHeader('Cache-Control', 'no-store');
-    return res.status(OK).json(filteredWeddings);
+  const { category } = req.params;
+  const { path } = req.params;
+  
+  await connectToDatabase();
+  const wedding = await WeddingModel.find({ category, isActive: true }).limit(10);
+  console.timeEnd("DB Query Time");
+  
+  appAssert(wedding, SERVER_TIMEOUT, "Request timed out");
+  
+  const filteredWeddings = wedding.map(wedding => {
+    // Ensure timeRange.end has default value
+    if (wedding.resepsi?.timeRange && !wedding.resepsi.timeRange.end) {
+      wedding.resepsi.timeRange.end = "selesai";
+    }
+    return wedding;
+  }).filter(wedding => wedding.path === path);
+  
+  appAssert(filteredWeddings.length > 0, NOT_FOUND, "wedding content not found");
+  return res.status(OK).json(filteredWeddings);
 });
 
 export const getRsvpByIdHandler = catchErrors(async(req, res)=>{  
