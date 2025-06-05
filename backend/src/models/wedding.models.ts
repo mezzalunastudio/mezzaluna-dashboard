@@ -65,6 +65,10 @@ export interface WeddingDocument extends mongoose.Document {
     brideBank?: string;
     brideNoRek?: string;
   };
+  dressColors?: string[];
+  otherInfo?: {
+    [key: string]: string;
+  };
   imageUrl: {
     groomImg?: string;
     brideImg?: string;
@@ -159,6 +163,8 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       brideNoRek: { type: String },
       brideBank: { type: String },
     },
+    dressColors: { type: [String]},
+    otherInfo: { type: Map, of: String },
     imageUrl: {
       groomImg: { type: String },
       brideImg: { type: String },
@@ -180,6 +186,7 @@ const weddingSchema = new mongoose.Schema<WeddingDocument>(
       audio: { type: String },
       youtubeVideoId: { type: String },
     },
+    
     path: { type: String, index: true }, 
     category: { type: String, required: true, index: true },
     isActive: { type: Boolean, required: true,index: true, default:false},
